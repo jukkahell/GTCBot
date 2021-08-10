@@ -18,8 +18,8 @@ for (const file of commandFiles) {
 
 client.once('ready', async () => {
 	const data: ApplicationCommandData[] = client.commands.map(c => c);
-	//await client.application?.commands.set(data);
-	const createdCommands = await client.guilds.cache.get(guildId)?.commands.set(data);
+	const createdCommands = await client.application?.commands.set(data);
+	//const createdCommands = await client.guilds.cache.get(guildId)?.commands.set(data);
 	const fullPermissions: GuildApplicationCommandPermissionData[] = []
 
 	createdCommands.forEach(command => {
