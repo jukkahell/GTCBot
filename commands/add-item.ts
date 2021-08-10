@@ -11,8 +11,8 @@ module.exports = {
             { name: "Other", value: "other" }
         ]},
         { name: "name", description: "Name will be shown for the buyers", type: "STRING", required: true },
-        { name: "currency", description: "Could be euro, dollar, DL or anything", type: "STRING" },
-        { name: "price", description: "Price in selected currency", type: "NUMBER" },
+        { name: "currency", description: "Could be euro, dollar, DL or anything", type: "STRING", required: true },
+        { name: "price", description: "Price in selected currency", type: "NUMBER", required: true },
         { name: "description", description: "Description is shown for buyers too", type: "STRING" }
     ],
 
@@ -20,17 +20,11 @@ module.exports = {
         const type = interaction.options.getString("type");
         const name = interaction.options.getString("name");
         const price = interaction.options.getNumber("price");
-        const priceText = price || "buyer to offer";
         const currency = interaction.options.getString("currency") || "";
-        if (price && currency.length == 0) {
-            return interaction.reply({
-                content: `Currency needs to be set if price is set.`
-            }); 
-        }
         const description = interaction.options.getString("description") || "";
         saveItem({ type, name, price, currency, description });
 		return interaction.reply({
-            content: `Added for sale: ${type} ${name} for ${priceText} ${currency} ${description}`
+            content: `Added for sale: ${type} ${name} for ${price} ${currency} - ${description}`
         });
 	},
 } as Command;
