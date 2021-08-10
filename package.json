@@ -4,7 +4,7 @@
   "description": "Help trading Growtopia stuff",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf ./dist && tsc && cp inventory.json dist/",
+    "build": "rimraf ./dist && tsc dist/",
     "start": "npm run build && node dist/index.js",
     "start:local": "tsc --resolveJsonModule index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
