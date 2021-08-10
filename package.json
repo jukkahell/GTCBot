@@ -1,0 +1,23 @@
+{
+  "name": "gtcbot",
+  "version": "1.0.0",
+  "description": "Help trading Growtopia stuff",
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf ./dist && tsc && cp inventory.json dist/",
+    "start": "npm run build && node dist/index.js",
+    "start:local": "tsc --resolveJsonModule index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jukka Hell",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "13.0.1",
+    "rimraf": "3.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "16.4.13",
+    "@types/ws": "7.4.7",
+    "typescript": "4.3.5"
+  }
+}
