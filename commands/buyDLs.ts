@@ -11,11 +11,11 @@ import { adminId } from "../config.json";
 const paymentMethodCollected = async(interaction: ButtonInteraction, quantity: number, midman: string) => {
     const paymentMethod = interaction.customId as PaymentMethod;
     const paymentTypeText = midman != null
-        ? `using midman ${midman} and`
+        ? `using midman \`${midman}\` and`
         : `paying upfront using`;
 
     await interaction.channel.send({
-        content: `Hey, <@${adminId}>! ${interaction.user.username} would like to buy ${quantity} DLs by ${paymentTypeText} ${paymentMethod}.`
+        content: `Hey, <@${adminId}>! ${interaction.user.username} would like to buy \`${quantity}\` DLs by ${paymentTypeText} \`${paymentMethod}.\``
     });
 
     const row = new MessageActionRow().addComponents(

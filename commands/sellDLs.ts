@@ -9,7 +9,7 @@ import { adminId } from "../config.json";
 
 const wrapUp = async(interaction: MessageComponentInteraction, channel: TextBasedChannels, midman: string) => {
     const paymentTypeText = midman != null
-        ? `using ${midman} as a midman`
+        ? `using \`${midman}\` as a midman`
         : `making the trade before payment`;
 
     await channel.send(`Thank you ${interaction.user.username}`);
