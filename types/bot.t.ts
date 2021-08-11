@@ -3,7 +3,7 @@ import { CategoryChannel } from "discord.js";
 export type TransactionType = "buy" | "sell";
 export type TradeType = "dls" | "account" | "other";
 export type PaymentType = "midman" | "upfront";
-export type PaymentMethod = "paypal" | "crypto" | "skrill";
+export type PaymentMethod = "mobilepay" | "paypal" | "crypto" | "skrill";
 
 export interface TradeChannel {
     id: number;
