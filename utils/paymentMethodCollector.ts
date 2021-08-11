@@ -1,11 +1,12 @@
 import { MessageActionRow, MessageButton, MessageComponentInteraction, TextBasedChannels, User } from "discord.js";
+import { TransactionType } from "types/bot.t";
 import { supportedPaymentMethods } from "./buy-utils";
 import { onCollectionEnd } from "./collectionTimeout";
 
-export const getPaymentMethodCollectorInteract = async (i: MessageComponentInteraction) => {
-    return await getPaymentMethodCollector(i.user, i.channel, i);
+export const getPaymentMethodCollectorInteract = async (i: MessageComponentInteraction, type: TransactionType = "buy") => {
+    return await getPaymentMethodCollector(i.user, i.channel, i, type);
 }
-export const getPaymentMethodCollector = async (user: User, channel: TextBasedChannels, interaction?: MessageComponentInteraction) => {
+export const getPaymentMethodCollector = async (user: User, channel: TextBasedChannels, interaction?: MessageComponentInteraction, type: TransactionType = "buy") => {
     const row = new MessageActionRow();
     for (let i = 0; i < supportedPaymentMethods.length; i++) {
         row.addComponents(
@@ -33,7 +34,8 @@ export const getPaymentMethodCollector = async (user: User, channel: TextBasedCh
     if (channel) {
         collector.on('end', (collection) => {
             if (collection.size == 0) {
-                onCollectionEnd(user, channel);
+                const deleteChannel = interaction == null;
+                onCollectionEnd(user, channel, deleteChannel, type);
             }
         });
     }

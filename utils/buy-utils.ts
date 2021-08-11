@@ -1,7 +1,7 @@
 import { PaymentMethod, PaymentType, ShopItem, TradeType } from "../types/bot.t";
 import * as fs from "fs";
 
-const inventoryFile = __dirname + "/../inventory.json";
+const inventoryFolder = __dirname + "/../inventories";
 const readInventory = (file: string) => {
     const contents = fs.readFileSync(file, { encoding: "utf8", flag: "r"});
     if (contents.length > 0) {
@@ -11,27 +11,32 @@ const readInventory = (file: string) => {
     }
 }
 
-export const shopItems = () => {
-    if (!fs.existsSync(inventoryFile)) {
-        fs.writeFileSync(inventoryFile, "[]", { flag: 'wx' });
+const getInventoryFileName = (guildId: string) => {
+    const inventory = inventoryFolder + `/${guildId}.json`;
+    if (!fs.existsSync(inventoryFolder)){
+        fs.mkdirSync(inventoryFolder);
     }
-    return readInventory(inventoryFile);
+    if (!fs.existsSync(inventory)) {
+        fs.writeFileSync(inventory, "[]", { flag: 'wx' });
+    }
+    return inventory;
+}
+
+export const shopItems = (guildId:string) => {
+    const inventory = getInventoryFileName(guildId);
+    return readInventory(inventory);
 };
 
-export const saveItem = (item: ShopItem) => {
-    if (!fs.existsSync(inventoryFile)) {
-        fs.writeFileSync(inventoryFile, "[]", { flag: 'wx' });
-    }
+export const saveItem = (guildId: string, item: ShopItem) => {
+    const inventoryFile = getInventoryFileName(guildId);
     const inventory = readInventory(inventoryFile);
     item.id = item.name.toLowerCase().replace(' ', '-');
     inventory.push(item);
     fs.writeFileSync(inventoryFile, JSON.stringify(inventory));
 }
 
-export const removeItem = (ids: string[]) => {
-    if (!fs.existsSync(inventoryFile)) {
-        throw new Error(`Inventory empty. Cannot remove ${ids.join(', ')}`);
-    }
+export const removeItem = (guildId: string, ids: string[]) => {
+    const inventoryFile = getInventoryFileName(guildId);
     let inventory = readInventory(inventoryFile);
     inventory = inventory.filter(i => !ids.includes(i.id));
     fs.writeFileSync(inventoryFile, JSON.stringify(inventory));

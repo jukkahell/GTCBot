@@ -1,12 +1,12 @@
-import { MessageActionRow, MessageButton, MessageComponentInteraction, MessageSelectMenu, MessageSelectOptionData, TextBasedChannels, User } from "discord.js";
-import { accountsBidCounts, shopItems, supportedMidmans } from "./buy-utils";
+import { MessageActionRow, MessageComponentInteraction, MessageSelectMenu, MessageSelectOptionData, TextBasedChannels, User } from "discord.js";
+import { TransactionType } from "types/bot.t";
+import { supportedMidmans } from "./buy-utils";
 import { onCollectionEnd } from "./collectionTimeout";
-import { emojiNumbers } from "./emojis";
 
-export const getMidmanCollectorInteract = async (i: MessageComponentInteraction) => {
-    return await getMidmanCollector(i.user, i.channel, i);
+export const getMidmanCollectorInteract = async (i: MessageComponentInteraction, type: TransactionType = "buy") => {
+    return await getMidmanCollector(i.user, i.channel, i, type);
 }
-export const getMidmanCollector = async (user: User, channel: TextBasedChannels, interaction?: MessageComponentInteraction) => {
+export const getMidmanCollector = async (user: User, channel: TextBasedChannels, interaction?: MessageComponentInteraction, type: TransactionType = "buy") => {
     const row = new MessageActionRow();
     const menu = new MessageSelectMenu()
         .setCustomId('midman-select')
@@ -47,7 +47,8 @@ export const getMidmanCollector = async (user: User, channel: TextBasedChannels,
     if (channel) {
         collector.on('end', (collection) => {
             if (collection.size == 0) {
-                onCollectionEnd(user, channel);
+                const deleteChannel = interaction == null;
+                onCollectionEnd(user, channel, deleteChannel, type);
             }
         });
     }

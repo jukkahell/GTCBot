@@ -1,10 +1,14 @@
 import { ButtonInteraction, Command, MessageActionRow, MessageButton } from 'discord.js';
+import { shopItems } from '../utils/buy-utils';
 
 module.exports = {
 	name: 'buy',
 	description: 'Buy DLs, accounts or other stuff',
+    defaultPermission: false,
 
 	async execute(interaction: ButtonInteraction) {
+        const hasAccounts = shopItems(interaction.guildId).some(i => i.type === "account");
+
         const row = new MessageActionRow()
             .addComponents(
                 new MessageButton()
@@ -14,6 +18,7 @@ module.exports = {
                 new MessageButton()
                     .setCustomId('buy-account')
                     .setLabel('Account')
+                    .setDisabled(!hasAccounts)
                     .setStyle('PRIMARY'),
             );
 

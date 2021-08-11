@@ -4,7 +4,7 @@ import { createNextChannel } from "../utils/guild-utils";
 import { PaymentType } from "../types/bot.t";
 import { supportedMidmans, supportedPaymentTypes } from "../utils/buy-utils";
 import { getMidmanCollectorInteract } from "../utils/midmanCollector";
-import { adminId } from "../config.json";
+import { guilds } from "../config.json";
 import { onCollectionEnd } from "../utils/collectionTimeout";
 
 const wrapUp = async(interaction: MessageComponentInteraction, channel: TextBasedChannels, midman: string) => {
@@ -14,6 +14,7 @@ const wrapUp = async(interaction: MessageComponentInteraction, channel: TextBase
 
     await channel.send(`Thank you ${interaction.user.username}`);
 
+    const adminId = guilds.find(g => g.id === interaction.guildId).adminId;
     await channel.send(`Hey, <@${adminId}>!
 Are you interested in buying the above account by ${paymentTypeText}?`);
 
@@ -56,7 +57,7 @@ This channel will be deleted automatically after ${ttlMillis/1000/60} minutes if
     });
     collector.on('end', (collection) => {
         if (collection.size == 0) {
-            onCollectionEnd(interaction.user, channel);
+            onCollectionEnd(interaction.user, channel, true, "sell");
         }
     });
 }
@@ -72,7 +73,7 @@ const midmanCollected = async(originalInteraction: MessageComponentInteraction, 
 }
 
 const collectMidman = async(originalInteraction: MessageComponentInteraction) => {
-    const collector = await getMidmanCollectorInteract(originalInteraction);
+    const collector = await getMidmanCollectorInteract(originalInteraction, "sell");
     collector.on('collect', (i: SelectMenuInteraction) => {
         if (i.user.id === originalInteraction.user.id) {
             midmanCollected(originalInteraction, i);
@@ -109,6 +110,7 @@ const collectPaymentType = async (originalInteraction: MessageComponentInteracti
 module.exports = {
     name: 'sell-account',
 	description: 'Sell your account',
+    defaultPermission: false,
 
 	async execute(interaction: ButtonInteraction) {
         await collectPaymentType(interaction, false);

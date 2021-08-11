@@ -66,7 +66,7 @@ export const getPaymentTypeCollector = async(user: User, channel: TextBasedChann
         collector.on('end', (collection) => {
             if (collection.size == 0) {
                 const deleteChannel = interaction == null;
-                onCollectionEnd(user, channel, deleteChannel);
+                onCollectionEnd(user, channel, deleteChannel, type);
             }
         });
     }

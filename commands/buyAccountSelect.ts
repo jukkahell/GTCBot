@@ -2,7 +2,7 @@ import { ButtonInteraction, Command, MessageActionRow, MessageButton, MessageCom
 import { PaymentMethod, PaymentType } from "../types/bot.t";
 import { shopItems, accountsBidCounts, supportedPaymentTypes, supportedMidmans } from "../utils/buy-utils";
 import { createNextChannel } from "../utils/guild-utils";
-import { adminId } from "../config.json";
+import { guilds } from "../config.json";
 import { getPaymentTypeCollectorInteract } from "../utils/paymentTypeCollector";
 import { getMidmanCollectorInteract } from "../utils/midmanCollector";
 import { getPaymentMethodCollectorInteract } from "../utils/paymentMethodCollector";
@@ -10,11 +10,12 @@ import { getPaymentMethodCollectorInteract } from "../utils/paymentMethodCollect
 const wrapUp = async (interaction: ButtonInteraction, accountId: string, midman: string) => {
     const paymentMethod = interaction.customId as PaymentMethod;
     const channel = await createNextChannel(interaction, "account");
-    const account = shopItems().find(i => i.id === accountId);
+    const account = shopItems(interaction.guildId).find(i => i.id === accountId);
     const paymentTypeText = midman != null
         ? `${midman} as a midman`
         : `Upfront`;
 
+    const adminId = guilds.find(g => g.id === interaction.guildId).adminId;
     channel.send(`
 Hey, <@${adminId}>!
 <@${interaction.user.id}> would like to buy account \`${account.name}\`
@@ -100,13 +101,14 @@ const collectPaymentType = async (originalInteraction: MessageComponentInteracti
 module.exports = {
     name: 'buy-account-select',
 	description: 'Buy a specific account',
+    defaultPermission: false,
     options: [
         { name: "account-id", description: "Account ID", required: true, type: "STRING" }
     ],
 
 	async execute(interaction: SelectMenuInteraction) {
         const accountId = interaction.values[0];
-        if (!accountId || !shopItems().some(i => i.id === accountId)) {
+        if (!accountId || !shopItems(interaction.guildId).some(i => i.id === accountId)) {
             return interaction.reply({ content: 'No account ID provided!', ephemeral: true });
         }
 

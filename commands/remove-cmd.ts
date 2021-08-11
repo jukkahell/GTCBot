@@ -1,13 +1,21 @@
 import { CommandInteraction, MessageActionRow, MessageSelectMenu, MessageSelectOptionData } from 'discord.js';
 import { shopItems } from '../utils/buy-utils';
+import { guilds } from '../config.json';
 
 module.exports = {
     name: 'remove',
 	description: 'Show accounts select box where you can remove shop items',
-    defaultPermission: false,
 
 	async execute(interaction: CommandInteraction) {
-        const items = shopItems();
+        const guild = guilds.find(g => g.adminId === interaction.user.id);
+        if (interaction.user.id !== guild.adminId) {
+            return interaction.reply({
+                content: `You don't have a permission to use this command`,
+                ephemeral: true,
+            });
+        }
+
+        const items = shopItems(guild.id);
         if (items.length == 0) {
             return interaction.reply({
                 content: `You have no items in the shop inventory`,

@@ -6,6 +6,7 @@ import { emojiNumbers } from "../utils/emojis";
 module.exports = {
     name: 'buy-account',
 	description: 'Buy account',
+    defaultPermission: false,
 
 	async execute(interaction: ButtonInteraction) {
         const row = new MessageActionRow();
@@ -13,7 +14,7 @@ module.exports = {
             .setCustomId('buy-account-select')
             .setPlaceholder('Nothing selected');
 
-        const accounts = shopItems().filter(i => i.type === "account");
+        const accounts = shopItems(interaction.guildId).filter(i => i.type === "account");
         for (let i = 0; i < accounts.length; i++) {
             const account = accounts[i];
             let label = account.name;

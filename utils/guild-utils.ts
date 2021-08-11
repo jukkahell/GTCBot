@@ -4,7 +4,7 @@ import { supportedBuyTypes } from "./buy-utils";
 import { activeTradesCategory, deleteTradeChannelAfterMinutes } from '../config.json';
 
 let tradeCategory: CategoryChannel = null;
-const getTradesCategory = async (guild: Guild) => {
+export const getTradesCategory = async (guild: Guild) => {
     if (tradeCategory != null) return tradeCategory;
 
     const channels = await guild.channels.fetch();

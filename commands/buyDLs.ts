@@ -6,7 +6,7 @@ import { getMidmanCollector } from "../utils/midmanCollector";
 import { getPaymentMethodCollector } from "../utils/paymentMethodCollector";
 import { getPaymentTypeCollector } from "../utils/paymentTypeCollector";
 import { onCollectionEnd } from "../utils/collectionTimeout";
-import { adminId } from "../config.json";
+import { guilds } from "../config.json";
 
 const paymentMethodCollected = async(interaction: ButtonInteraction, quantity: number, midman: string) => {
     const paymentMethod = interaction.customId as PaymentMethod;
@@ -14,6 +14,7 @@ const paymentMethodCollected = async(interaction: ButtonInteraction, quantity: n
         ? `using \`${midman}\` as a midman and`
         : `paying upfront using`;
 
+    const adminId = guilds.find(g => g.id === interaction.guildId).adminId;
     await interaction.channel.send({
         content: `Hey, <@${adminId}>! ${interaction.user.username} would like to buy \`${quantity}\` DLs by ${paymentTypeText} \`${paymentMethod}.\``
     });
@@ -94,6 +95,7 @@ const collectPaymentType = async(user: User, channel: TextBasedChannels, quantit
 module.exports = {
     name: 'buy-dls',
 	description: 'Buy DLs',
+    defaultPermission: false,
 
 	async execute(interaction: ButtonInteraction) {
         const channel = await createNextChannel(interaction, "dls");
@@ -103,7 +105,7 @@ module.exports = {
         dlsQuantityCollector.on('collect', (m) => collectPaymentType(interaction.user, channel, parseInt(m.content), false));
         dlsQuantityCollector.on('end', (collection) => {
             if (collection.size == 0) {
-                onCollectionEnd(interaction.user, channel);
+                onCollectionEnd(interaction.user, channel, true, "buy");
             }
         });
 

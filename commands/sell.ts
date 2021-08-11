@@ -3,6 +3,7 @@ import { ButtonInteraction, Command, MessageActionRow, MessageButton } from 'dis
 module.exports = {
 	name: 'sell',
 	description: 'Sell DLs, accounts or other stuff',
+    defaultPermission: false,
 
 	async execute(interaction: ButtonInteraction) {
         const row = new MessageActionRow()
