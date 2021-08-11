@@ -12,7 +12,7 @@ const wrapUp = async (interaction: ButtonInteraction, accountId: string, midman:
     const channel = await createNextChannel(interaction, "account");
     const account = shopItems().find(i => i.id === accountId);
     const paymentTypeText = midman != null
-        ? `Midman ${midman}`
+        ? `${midman} as a midman`
         : `Upfront`;
 
     channel.send(`
@@ -52,8 +52,8 @@ const collectPaymentMethod = async(originalInteraction: MessageComponentInteract
     });
 }
 
-const midmanCollected = async(originalInteraction: MessageComponentInteraction, interaction: ButtonInteraction, accountId: string) => {
-    const midman = interaction.customId;
+const midmanCollected = async(originalInteraction: MessageComponentInteraction, interaction: SelectMenuInteraction, accountId: string) => {
+    const midman = interaction.values[0];
     if (!supportedMidmans.includes(midman)) {
         collectPaymentType(originalInteraction, accountId, true);
         return;
@@ -64,7 +64,7 @@ const midmanCollected = async(originalInteraction: MessageComponentInteraction, 
 
 const collectMidman = async(originalInteraction: MessageComponentInteraction, accountId: string) => {
     const collector = await getMidmanCollectorInteract(originalInteraction);
-    collector.on('collect', (i: ButtonInteraction) => {
+    collector.on('collect', (i: SelectMenuInteraction) => {
         if (i.user.id === originalInteraction.user.id) {
             midmanCollected(originalInteraction, i, accountId);
         }

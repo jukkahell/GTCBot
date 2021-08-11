@@ -1,4 +1,4 @@
-import { ButtonInteraction, Command, MessageActionRow, MessageButton, MessageComponentInteraction, TextBasedChannels } from "discord.js";
+import { ButtonInteraction, Command, MessageActionRow, MessageButton, MessageComponentInteraction, SelectMenuInteraction, TextBasedChannels } from "discord.js";
 import { getPaymentTypeCollectorInteract } from "../utils/paymentTypeCollector";
 import { createNextChannel } from "../utils/guild-utils";
 import { PaymentType } from "../types/bot.t";
@@ -61,8 +61,8 @@ This channel will be deleted automatically after ${ttlMillis/1000/60} minutes if
     });
 }
 
-const midmanCollected = async(originalInteraction: MessageComponentInteraction, interaction: ButtonInteraction) => {
-    const midman = interaction.customId;
+const midmanCollected = async(originalInteraction: MessageComponentInteraction, interaction: SelectMenuInteraction) => {
+    const midman = interaction.values[0];
     if (!supportedMidmans.includes(midman)) {
         collectPaymentType(originalInteraction, true);
         return;
@@ -73,7 +73,7 @@ const midmanCollected = async(originalInteraction: MessageComponentInteraction, 
 
 const collectMidman = async(originalInteraction: MessageComponentInteraction) => {
     const collector = await getMidmanCollectorInteract(originalInteraction);
-    collector.on('collect', (i: ButtonInteraction) => {
+    collector.on('collect', (i: SelectMenuInteraction) => {
         if (i.user.id === originalInteraction.user.id) {
             midmanCollected(originalInteraction, i);
         }

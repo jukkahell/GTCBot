@@ -50,5 +50,5 @@ export const supportedPaymentTypes: PaymentType[] = [
     "midman", "upfront"
 ];
 export const supportedMidmans: string[] = [
-    "Riou", "Zize", "Bazzela", "Darwindust", "Mecromans"
+    "Riou", "Zize", "Bazzela", "Darwindust", "Mecromans", "anyone"
 ]

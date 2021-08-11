@@ -80,7 +80,10 @@ const handleButtonInteraction = async (interaction: ButtonInteraction) => {
 }
 
 const handleSelectInteraction = async (interaction: SelectMenuInteraction) => {
-	if (!interaction.isSelectMenu() || !client.commands.has(interaction.customId)) return;
+	if (!interaction.isSelectMenu() || !client.commands.has(interaction.customId)) {
+		interaction.deferUpdate();
+		return;
+	}
 
 	try {
 		await client.commands.get(interaction.customId).execute(interaction);

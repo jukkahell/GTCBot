@@ -1,4 +1,4 @@
-import { ButtonInteraction, Command, Message, MessageActionRow, MessageButton, TextBasedChannels, User } from "discord.js";
+import { ButtonInteraction, Command, Message, MessageActionRow, MessageButton, SelectMenuInteraction, TextBasedChannels, User } from "discord.js";
 import { PaymentMethod, PaymentType } from "types/bot.t";
 import { supportedMidmans, supportedPaymentTypes } from "../utils/buy-utils";
 import { createNextChannel } from "../utils/guild-utils";
@@ -11,7 +11,7 @@ import { adminId } from "../config.json";
 const paymentMethodCollected = async(interaction: ButtonInteraction, quantity: number, midman: string) => {
     const paymentMethod = interaction.customId as PaymentMethod;
     const paymentTypeText = midman != null
-        ? `using midman \`${midman}\` and`
+        ? `using \`${midman}\` as a midman and`
         : `paying upfront using`;
 
     await interaction.channel.send({
@@ -43,8 +43,8 @@ const collectPaymentMethod = async(user: User, channel: TextBasedChannels, quant
     });
 }
 
-const midmanCollected = async(user: User, interaction: ButtonInteraction, quantity: number) => {
-    const midman = interaction.customId;
+const midmanCollected = async(user: User, interaction: SelectMenuInteraction, quantity: number) => {
+    const midman = interaction.values[0];
     if (!supportedMidmans.includes(midman)) {
         collectPaymentType(user, interaction.channel, quantity, true);
         return;
@@ -55,7 +55,7 @@ const midmanCollected = async(user: User, interaction: ButtonInteraction, quanti
 
 const collectMidman = async(user: User, channel: TextBasedChannels, quantity: number) => {
     const collector = await getMidmanCollector(user, channel);
-    collector.on('collect', (i: ButtonInteraction) => {
+    collector.on('collect', (i: SelectMenuInteraction) => {
         if (i.user.id === user.id) {
             midmanCollected(user, i, quantity);
         }
