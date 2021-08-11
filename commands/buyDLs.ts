@@ -6,7 +6,7 @@ import { getMidmanCollector } from "../utils/midmanCollector";
 import { getPaymentMethodCollector } from "../utils/paymentMethodCollector";
 import { getPaymentTypeCollector } from "../utils/paymentTypeCollector";
 import { onCollectionEnd } from "../utils/collectionTimeout";
-import { guilds } from "../config.json";
+import { guilds, unitPriceDL } from "../config.json";
 
 const paymentMethodCollected = async(interaction: ButtonInteraction, quantity: number, midman: string) => {
     const paymentMethod = interaction.customId as PaymentMethod;
@@ -102,7 +102,11 @@ module.exports = {
         const message = await channel.send(`OK <@${interaction.user.id}>. How many DLs would you like to buy?`);
         const filter = (m: Message) => interaction.user.id === m.author.id && !isNaN(m.content as any);
         const dlsQuantityCollector = message.channel.createMessageCollector( {filter, time: 60000, max: 1 });
-        dlsQuantityCollector.on('collect', (m) => collectPaymentType(interaction.user, channel, parseInt(m.content), false));
+        dlsQuantityCollector.on('collect', async (m) => {
+            const quantity = parseInt(m.content);
+            await channel.send(`That would be total of EUR ${unitPriceDL * quantity} (${unitPriceDL}€ each).`);
+            collectPaymentType(interaction.user, channel, quantity, false)
+        });
         dlsQuantityCollector.on('end', (collection) => {
             if (collection.size == 0) {
                 onCollectionEnd(interaction.user, channel, true, "buy");
