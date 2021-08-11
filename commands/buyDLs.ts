@@ -104,7 +104,8 @@ module.exports = {
         const dlsQuantityCollector = message.channel.createMessageCollector( {filter, time: 60000, max: 1 });
         dlsQuantityCollector.on('collect', async (m) => {
             const quantity = parseInt(m.content);
-            await channel.send(`That would be total of EUR ${unitPriceDL * quantity} (${unitPriceDL}€ each).`);
+            const totalPrice = (quantity * unitPriceDL).toFixed(2);
+            await channel.send(`That would be total of EUR ${totalPrice} (${unitPriceDL}€ each).`);
             collectPaymentType(interaction.user, channel, quantity, false)
         });
         dlsQuantityCollector.on('end', (collection) => {
