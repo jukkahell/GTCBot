@@ -30,7 +30,7 @@ export const shopItems = (guildId:string) => {
 export const saveItem = (guildId: string, item: ShopItem) => {
     const inventoryFile = getInventoryFileName(guildId);
     const inventory = readInventory(inventoryFile);
-    item.id = item.name.toLowerCase().replace(' ', '-');
+    item.id = item.name.toLowerCase().replace(/[^\w\s]+/g, "").replace(/\s+/g, '-');
     inventory.push(item);
     fs.writeFileSync(inventoryFile, JSON.stringify(inventory));
 }
