@@ -18,7 +18,7 @@ module.exports = {
 
 	async execute(interaction: CommandInteraction) {
         const guild = guilds.find(g => g.adminId === interaction.user.id);
-        if (interaction.user.id !== guild.adminId) {
+        if (interaction.user.id !== guild?.adminId) {
             return interaction.reply({
                 content: `You don't have a permission to use this command`,
                 ephemeral: true,
