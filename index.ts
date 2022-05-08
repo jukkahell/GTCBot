@@ -1,4 +1,4 @@
-import { ApplicationCommandData, ButtonInteraction, Client, Collection, Command, CommandInteraction, Guild, GuildApplicationCommandPermissionData, Intents, Interaction, MessageActionRow, MessageButton, SelectMenuInteraction, TextBasedChannels, TextChannel } from 'discord.js';
+import { ButtonInteraction, Client, Collection, Command, CommandInteraction, Guild, Intents, Interaction, MessageActionRow, MessageButton, SelectMenuInteraction, TextChannel } from 'discord.js';
 import { token, botChannel, guilds, activeTradesCategory } from './config.json';
 import * as fs from 'fs';
 import { getTradesCategory } from './utils/guild-utils';
@@ -18,36 +18,7 @@ for (const file of commandFiles) {
 }
 
 client.once('ready', async () => {
-	const data: ApplicationCommandData[] = client.commands.map(c => c);
-
-	const createdCommands = await client.application.commands.set(data);
-	guilds.forEach(async guild => {
-		if (createdCommands) {
-			const realGuild = client.guilds.cache.get(guild.id);
-			if (realGuild) {
-				const fullPermissions: GuildApplicationCommandPermissionData[] = []
-				createdCommands.forEach(command => {
-					if (!command.defaultPermission) {
-						fullPermissions.push({
-							id: command.id,
-							permissions: [{
-								id: realGuild.roles.everyone.id,
-								type: 'ROLE',
-								permission: true,
-							}]
-						});
-					}
-				});
-
-				await client.guilds.cache.get(guild.id)?.commands.permissions.set({ fullPermissions });
-			}
-		} else {
-			console.log(`Wasn't able to create commands for guild ${guild.id}`);
-		}
-	});
-	
 	console.log('Ready!');
-
 	sendCommandButtons();
 });
 

@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageComponentInteraction, MessageSelectMenu, MessageSelectOptionData, TextBasedChannels, User } from "discord.js";
+import { MessageActionRow, MessageComponentInteraction, MessageSelectMenu, MessageSelectOptionData, TextBasedChannel, User } from "discord.js";
 import { TransactionType } from "types/bot.t";
 import { supportedMidmans } from "./buy-utils";
 import { onCollectionEnd } from "./collectionTimeout";
@@ -6,7 +6,7 @@ import { onCollectionEnd } from "./collectionTimeout";
 export const getMidmanCollectorInteract = async (i: MessageComponentInteraction, type: TransactionType = "buy") => {
     return await getMidmanCollector(i.user, i.channel, i, type);
 }
-export const getMidmanCollector = async (user: User, channel: TextBasedChannels, interaction?: MessageComponentInteraction, type: TransactionType = "buy") => {
+export const getMidmanCollector = async (user: User, channel: TextBasedChannel, interaction?: MessageComponentInteraction, type: TransactionType = "buy") => {
     const row = new MessageActionRow();
     const menu = new MessageSelectMenu()
         .setCustomId('midman-select')

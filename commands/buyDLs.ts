@@ -1,4 +1,4 @@
-import { ButtonInteraction, Command, Message, MessageActionRow, MessageButton, SelectMenuInteraction, TextBasedChannels, User } from "discord.js";
+import { ButtonInteraction, Command, Message, MessageActionRow, MessageButton, SelectMenuInteraction, TextBasedChannel, User } from "discord.js";
 import { PaymentMethod, PaymentType } from "types/bot.t";
 import { supportedMidmans, supportedPaymentTypes } from "../utils/buy-utils";
 import { createNextChannel } from "../utils/guild-utils";
@@ -8,8 +8,8 @@ import { getPaymentTypeCollector } from "../utils/paymentTypeCollector";
 import { onCollectionEnd } from "../utils/collectionTimeout";
 import { guilds, unitPriceDL } from "../config.json";
 
-const paymentMethodCollected = async(interaction: ButtonInteraction, quantity: number, midman: string) => {
-    const paymentMethod = interaction.customId as PaymentMethod;
+const paymentMethodCollected = async(interaction: SelectMenuInteraction, quantity: number, midman: string) => {
+    const paymentMethod = interaction.values[0] as PaymentMethod;
     const paymentTypeText = midman != null
         ? `using \`${midman}\` as a midman and`
         : `paying upfront using`;
@@ -35,9 +35,9 @@ const paymentMethodCollected = async(interaction: ButtonInteraction, quantity: n
     })
 }
 
-const collectPaymentMethod = async(user: User, channel: TextBasedChannels, quantity: number, midman: string) => {
+const collectPaymentMethod = async(user: User, channel: TextBasedChannel, quantity: number, midman: string) => {
     const collector = await getPaymentMethodCollector(user, channel);
-    collector.on('collect', (i: ButtonInteraction) => {
+    collector.on('collect', (i: SelectMenuInteraction) => {
         if (i.user.id === user.id) {
             paymentMethodCollected(i, quantity, midman);
         }
@@ -54,7 +54,7 @@ const midmanCollected = async(user: User, interaction: SelectMenuInteraction, qu
     collectPaymentMethod(user, interaction.channel, quantity, midman);
 }
 
-const collectMidman = async(user: User, channel: TextBasedChannels, quantity: number) => {
+const collectMidman = async(user: User, channel: TextBasedChannel, quantity: number) => {
     const collector = await getMidmanCollector(user, channel);
     collector.on('collect', (i: SelectMenuInteraction) => {
         if (i.user.id === user.id) {
@@ -83,7 +83,7 @@ const paymentTypeCollected = async(user: User, interaction: ButtonInteraction, q
     }
 }
 
-const collectPaymentType = async(user: User, channel: TextBasedChannels, quantity: number, userCameBack: boolean) => {
+const collectPaymentType = async(user: User, channel: TextBasedChannel, quantity: number, userCameBack: boolean) => {
     const collector = await getPaymentTypeCollector(user, channel, null, userCameBack);
     collector.on('collect', (i: ButtonInteraction) => {
         if (i.user.id === user.id) {

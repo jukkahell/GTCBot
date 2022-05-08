@@ -7,8 +7,8 @@ import { getPaymentTypeCollectorInteract } from "../utils/paymentTypeCollector";
 import { getMidmanCollectorInteract } from "../utils/midmanCollector";
 import { getPaymentMethodCollectorInteract } from "../utils/paymentMethodCollector";
 
-const wrapUp = async (interaction: ButtonInteraction, accountId: string, midman: string) => {
-    const paymentMethod = interaction.customId as PaymentMethod;
+const wrapUp = async (interaction: SelectMenuInteraction, accountId: string, midman: string) => {
+    const paymentMethod = interaction.values[0] as PaymentMethod;
     const channel = await createNextChannel(interaction, "account");
     const account = shopItems(interaction.guildId).find(i => i.id === accountId);
     const paymentTypeText = midman != null
@@ -46,7 +46,7 @@ Payment method: ${paymentMethod}.`);
 
 const collectPaymentMethod = async(originalInteraction: MessageComponentInteraction, accountId: string, midman: string) => {
     const collector = await getPaymentMethodCollectorInteract(originalInteraction);
-    collector.on('collect', (i: ButtonInteraction) => {
+    collector.on('collect', (i: SelectMenuInteraction) => {
         if (i.user.id === originalInteraction.user.id) {
             wrapUp(i, accountId, midman);
         }

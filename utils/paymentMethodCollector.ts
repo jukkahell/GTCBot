@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, MessageComponentInteraction, TextBasedChannels, User } from "discord.js";
+import { MessageActionRow, MessageComponentInteraction, MessageSelectMenu, MessageSelectOptionData, TextBasedChannel, User } from "discord.js";
 import { TransactionType } from "types/bot.t";
 import { supportedPaymentMethods } from "./buy-utils";
 import { onCollectionEnd } from "./collectionTimeout";
@@ -6,16 +6,22 @@ import { onCollectionEnd } from "./collectionTimeout";
 export const getPaymentMethodCollectorInteract = async (i: MessageComponentInteraction, type: TransactionType = "buy") => {
     return await getPaymentMethodCollector(i.user, i.channel, i, type);
 }
-export const getPaymentMethodCollector = async (user: User, channel: TextBasedChannels, interaction?: MessageComponentInteraction, type: TransactionType = "buy") => {
+export const getPaymentMethodCollector = async (user: User, channel: TextBasedChannel, interaction?: MessageComponentInteraction, type: TransactionType = "buy") => {
     const row = new MessageActionRow();
+    const menu = new MessageSelectMenu()
+        .setCustomId('payment-method-select')
+        .setPlaceholder('Nothing selected');
+
     for (let i = 0; i < supportedPaymentMethods.length; i++) {
-        row.addComponents(
-            new MessageButton()
-                .setCustomId(supportedPaymentMethods[i])
-                .setLabel(supportedPaymentMethods[i])
-                .setStyle('PRIMARY')
-        )
+        const paymentMethod = supportedPaymentMethods[i];
+        const option: MessageSelectOptionData = {
+            label: paymentMethod,
+            value: paymentMethod,
+        }
+        menu.addOptions(option);
     }
+
+    row.addComponents(menu);
 
     if (interaction) {
         await interaction.followUp({
@@ -30,7 +36,7 @@ export const getPaymentMethodCollector = async (user: User, channel: TextBasedCh
         });
     }
     
-    const collector = channel.createMessageComponentCollector({ componentType: "BUTTON", time: 60000, max: 1 });
+    const collector = channel.createMessageComponentCollector({ componentType: "SELECT_MENU", time: 60000, max: 1 });
     if (channel) {
         collector.on('end', (collection) => {
             if (collection.size == 0) {

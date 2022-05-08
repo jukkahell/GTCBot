@@ -1,4 +1,4 @@
-import { MessageComponentInteraction, TextBasedChannels, MessageActionRow, MessageButton, ButtonInteraction, Command, SelectMenuInteraction } from "discord.js";
+import { MessageComponentInteraction, TextBasedChannel, MessageActionRow, MessageButton, ButtonInteraction, Command, SelectMenuInteraction } from "discord.js";
 import { PaymentType } from "../types/bot.t";
 import { supportedMidmans, supportedPaymentTypes } from "../utils/buy-utils";
 import { onCollectionEnd } from "../utils/collectionTimeout";
@@ -7,7 +7,7 @@ import { getMidmanCollectorInteract } from "../utils/midmanCollector";
 import { getPaymentTypeCollectorInteract } from "../utils/paymentTypeCollector";
 import { guilds } from "../config.json";
 
-const wrapUp = async(interaction: MessageComponentInteraction, channel: TextBasedChannels, midman: string) => {
+const wrapUp = async(interaction: MessageComponentInteraction, channel: TextBasedChannel, midman: string) => {
     const paymentTypeText = midman != null
         ? `using \`${midman}\` as a midman`
         : `making the trade before payment`;

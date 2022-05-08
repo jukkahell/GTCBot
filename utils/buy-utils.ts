@@ -49,11 +49,11 @@ export const supportedBuyTypes: TradeType[] = [
     "account","dls","other"
 ];
 export const supportedPaymentMethods: PaymentMethod[] = [
-    "mobilepay", "crypto", "paypal", "skrill"
+    "mobilepay", "crypto", "paypal", "brank transfer", "western union", "paysafe", "gift card", "cashapp"
 ];
 export const supportedPaymentTypes: PaymentType[] = [
     "midman", "upfront"
 ];
 export const supportedMidmans: string[] = [
-    "Riou", "Zize", "Bazzela", "Darwindust", "Mecromans", "anyone"
+    "Riou", "Zize", "Alyons", "Darwindust", "tk", "Nickerinho", "Damannico", "anyone"
 ]

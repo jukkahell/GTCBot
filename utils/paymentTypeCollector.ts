@@ -1,11 +1,11 @@
-import { TextBasedChannels, MessageActionRow, MessageButton, User, MessageComponentInteraction, InteractionReplyOptions } from "discord.js";
+import { TextBasedChannel, MessageActionRow, MessageButton, User, MessageComponentInteraction, InteractionReplyOptions } from "discord.js";
 import { TransactionType } from "../types/bot.t";
 import { onCollectionEnd } from "./collectionTimeout";
 
 export const getPaymentTypeCollectorInteract = async (i: MessageComponentInteraction, userCameBack: boolean, type: TransactionType = "buy") => {
     return await getPaymentTypeCollector(i.user, i.channel, i, userCameBack, type);
 }
-export const getPaymentTypeCollector = async(user: User, channel: TextBasedChannels, interaction?: MessageComponentInteraction, userCameBack?: boolean, type: TransactionType = "buy") => {
+export const getPaymentTypeCollector = async(user: User, channel: TextBasedChannel, interaction?: MessageComponentInteraction, userCameBack?: boolean, type: TransactionType = "buy") => {
     const upfrontText = type === "buy" ? 'Upfront' : 'Trade first';
     const row = new MessageActionRow()
         .addComponents(
@@ -30,10 +30,10 @@ export const getPaymentTypeCollector = async(user: User, channel: TextBasedChann
 
     let text = '';
     if (!userCameBack) {
-        if (type == "buy") {
-            text = `Would you like to pay upfront or use middleman for the trade?`
+        if (type === "buy") {
+            text = `Would you like to pay upfront or use a middleman for the trade?`
         } else {
-            text = `Would you like to make the trade before payment or use middleman for the trade?`
+            text = `Would you like to make the trade before payment or use a middleman for the trade?`
         }
     } else {
         if (type === "buy") {
